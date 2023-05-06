@@ -13,16 +13,20 @@ st.subheader(f"{option} for the next {days} days in {place}")
 
 if place:
     # Get the filtered temperature/sky data
-    filtered_data = get_data(place, days)
+    try:
+        filtered_data = get_data(place, days)
 
-    if option == "Temperature":
-        temperatures = [dict["main"]["temp"] for dict in filtered_data]
-        dates = [dict["dt_txt"] for dict in filtered_data]
-        # Create a temperature plot
-        figure = px.line(x=dates, y=temperatures, labels={"x": "Date", "y": "Temperature"})
-        st.plotly_chart(figure)
+        if option == "Temperature":
+            temperatures = [dict["main"]["temp"]/10 for dict in filtered_data]
+            dates = [dict["dt_txt"] for dict in filtered_data]
+            # Create a temperature plot
+            figure = px.line(x=dates, y=temperatures, labels={"x": "Date", "y": "Temperature"})
+            st.plotly_chart(figure)
 
-    if option == "Sky":
-        sky_conditions = [dict["weather"][0]["main"] for dict in filtered_data]
-        image_paths = [f"images/{condition}.png" for condition in sky_conditions]
-        st.image(image_paths, width=115)
+        if option == "Sky":
+            sky_conditions = [dict["weather"][0]["main"] for dict in filtered_data]
+            image_paths = [f"images/{condition}.png" for condition in sky_conditions]
+            st.image(image_paths, width=115)
+
+    except KeyError:
+        st.write("That place does not exist.")
