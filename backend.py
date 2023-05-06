@@ -1,9 +1,16 @@
 import requests
+from config import API_KEY
+import streamlit as st
 import os
 
+
 def get_data(place, forecast_days):
-    API_KEY = os.environ["API_KEY"]
-    url = f"http://api.openweathermap.org/data/2.5/forecast?q={place}&appid={API_KEY}"
+    if API_KEY:
+        url = f"http://api.openweathermap.org/data/2.5/forecast?q={place}&appid={API_KEY}"
+    else:
+        API_KEY_ENV = os.environ["API_KEY"]
+        url = f"http://api.openweathermap.org/data/2.5/forecast?q={place}&appid={API_KEY_ENV}"
+        
     response = requests.get(url)
     data = response.json()
     filtered_data = data["list"]
