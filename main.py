@@ -3,8 +3,8 @@ import plotly.express as px
 from backend import get_data
 
 # Add title, text input, slider, selectbox and subheader
-st.title("Weather Forecast for the Next Days")
-place = st.text_input("Place: ")
+st.title("Weather Forecast")
+place = st.text_input(label="City: ", placeholder="Enter a city name for searching...")
 days = st.slider("Forecast Days", min_value=1, max_value=5,
                  help="Select the number of forecasted days")
 option = st.selectbox("Select data to view", 
@@ -17,16 +17,17 @@ if place:
         filtered_data = get_data(place, days)
 
         if option == "Temperature":
-            temperatures = [dict["main"]["temp"]/10 for dict in filtered_data]
+            temperatures = [dict["main"]["temp"]-273.15 for dict in filtered_data]
             dates = [dict["dt_txt"] for dict in filtered_data]
             # Create a temperature plot
-            figure = px.line(x=dates, y=temperatures, labels={"x": "Date", "y": "Temperature"})
+            figure = px.line(x=dates, y=temperatures, labels={"x": "Date", "y": "Temperature (°C)"})
             st.plotly_chart(figure)
 
         if option == "Sky":
             sky_conditions = [dict["weather"][0]["main"] for dict in filtered_data]
             image_paths = [f"images/{condition}.png" for condition in sky_conditions]
-            st.image(image_paths, width=115)
+            dates = [dict["dt_txt"] for dict in filtered_data]
+            st.image(image_paths, caption=dates, width=115)
 
     except KeyError:
-        st.write("That place does not exist.")
+        st.write("This place does not exist, please enter a city name.")
