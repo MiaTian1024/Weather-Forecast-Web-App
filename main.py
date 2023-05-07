@@ -8,7 +8,7 @@ place = st.text_input(label="City: ", placeholder="Enter a city name...")
 days = st.slider("Forecast Days", min_value=1, max_value=5,
                  help="Select the number of forecasted days")
 option = st.selectbox("Select data to view", 
-                      ("Temperature", "Sky"))
+                      ("Sky", "Temperature"))
 st.subheader(f"{option} for the next {days} days in {place}")
 
 if place:
